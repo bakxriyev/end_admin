@@ -18,7 +18,7 @@ export function AdminForm({ admin, onSave, onCancel, setToast }: AdminFormProps)
   const [formData, setFormData] = useState(admin || {})
   const [loading, setLoading] = useState(false)
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "https://b.kardioclinic.uz"
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

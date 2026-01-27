@@ -1,77 +1,62 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { useState } from "react"
 import { Sidebar } from "./sidebar"
 import { Header } from "./header"
+import { Dashboard } from "@/components/pages/dashboard"
+import { AdminManagement } from "@/components/pages/admin-management"
+import { DoctorManagement } from "@/components/pages/doctor-management"
+import { NewsManagement } from "@/components/pages/news-management"
+import { BlogManagement } from "@/components/pages/blog-management"
+import { ServicesManagement } from "@/components/pages/services-management"
+import { InsuranceManagement } from "@/components/pages/insurance-management"
+import { CareerManagement } from "@/components/pages/career-management"
+import { DirectionManagement } from "@/components/pages/direction-management"
+import { UserManagement } from "../pages/zayafka-management"
 
 interface ProtectedLayoutProps {
-  children: React.ReactNode
   adminData: any
   onLogout: () => void
 }
 
-export function ProtectedLayout({ children, adminData, onLogout }: ProtectedLayoutProps) {
+export function ProtectedLayout({ adminData, onLogout }: ProtectedLayoutProps) {
   const [currentPage, setCurrentPage] = useState("dashboard")
-  const pathname = usePathname()
-  const router = useRouter()
 
-  // Pathname o'zgarganda currentPage ni yangilash
-  useEffect(() => {
-    const routes = {
-      "/dashboard": "dashboard",
-      "/clinic-requests": "clinic_requests",
-      "/admin": "admin",
-      "/doctors": "doctor",
-      "/news": "news",
-      "/blog": "blog",
-      "/services": "services",
-      "/insurance": "insurance",
-      "/careers": "career",
-      "/directions": "direction",
+  const renderPage = () => {
+    switch (currentPage) {
+      case "dashboard":
+        return <Dashboard />
+      case "admin":
+        return <AdminManagement />
+      case "doctor":
+        return <DoctorManagement />
+      case "news":
+        return <NewsManagement />
+      case "blog":
+        return <BlogManagement />
+      case "services":
+        return <ServicesManagement />
+      case "insurance":
+        return <InsuranceManagement />
+      case "career":
+        return <CareerManagement />
+      case "direction":
+        return <DirectionManagement />
+      case "zayafka":
+        return <UserManagement/>
+      default:
+        return <Dashboard />
     }
-
-    const page = routes[pathname as keyof typeof routes] || "dashboard"
-    setCurrentPage(page)
-  }, [pathname])
-
-  // Agar auth yo'q bo'lsa, login sahifasiga yo'naltirish
-  useEffect(() => {
-    const token = localStorage.getItem("authToken")
-    if (!token) {
-      router.push("/")
-    }
-  }, [router])
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <Sidebar 
-        currentPage={currentPage} 
-        onPageChange={(page) => {
-          const routeMap: { [key: string]: string } = {
-            dashboard: "/dashboard",
-            clinic_requests: "/clinic-requests",
-            admin: "/admin",
-            doctor: "/doctors",
-            news: "/news",
-            blog: "/blog",
-            services: "/services",
-            insurance: "/insurance",
-            career: "/careers",
-            direction: "/directions",
-          }
-          router.push(routeMap[page] || "/dashboard")
-        }} 
-        adminData={adminData} 
-        onLogout={onLogout} 
-      />
+      <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} adminData={adminData} onLogout={onLogout} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header adminData={adminData} onLogout={onLogout} />
-        
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
+
+        <main className="flex-1 overflow-y-auto">{renderPage()}</main>
       </div>
     </div>
   )
