@@ -1,47 +1,31 @@
+// app/page.tsx
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { LoginForm } from "@/components/auth/login-form"
-import { ProtectedLayout } from "@/components/layout/protected-layout"
 
-export default function Page() {
+export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [adminData, setAdminData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
     const savedAdminData = localStorage.getItem("adminData")
 
-    console.log("[v0] Checking session - Token:", !!token, "AdminData:", !!savedAdminData)
-
     if (token && savedAdminData) {
-      try {
-        const parsedData = JSON.parse(savedAdminData)
-        setAdminData(parsedData)
-        setIsAuthenticated(true)
-        console.log("[v0] Session restored from localStorage")
-      } catch (err) {
-        console.log("[v0] Failed to parse admin data:", err)
-        localStorage.removeItem("authToken")
-        localStorage.removeItem("adminData")
-      }
+      setIsAuthenticated(true)
+      router.push("/dashboard")
     }
     setIsLoading(false)
-  }, [])
+  }, [router])
 
   const handleLoginSuccess = (data: any) => {
-    console.log("[v0] handleLoginSuccess called with:", data)
-    setAdminData(data)
+    localStorage.setItem("authToken", data.token || "mock-token")
+    localStorage.setItem("adminData", JSON.stringify(data))
     setIsAuthenticated(true)
-  }
-
-  const handleLogout = () => {
-    console.log("[v0] Logging out")
-    localStorage.removeItem("authToken")
-    localStorage.removeItem("adminData")
-    setIsAuthenticated(false)
-    setAdminData(null)
+    router.push("/dashboard")
   }
 
   if (isLoading) {
@@ -55,9 +39,9 @@ export default function Page() {
     )
   }
 
-  if (!isAuthenticated) {
-    return <LoginForm onLoginSuccess={handleLoginSuccess} />
+  if (isAuthenticated) {
+    return null 
   }
 
-  return <ProtectedLayout adminData={adminData} onLogout={handleLogout} />
+  return <LoginForm onLoginSuccess={handleLoginSuccess} />
 }

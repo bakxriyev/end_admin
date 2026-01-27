@@ -1,3 +1,4 @@
+// components/layout/sidebar.tsx
 "use client"
 
 import {
@@ -10,29 +11,32 @@ import {
   Compass,
   LogOut,
   Menu,
+  ClipboardList,
 } from "lucide-react"
 import { useState } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 interface SidebarProps {
-  currentPage: string
-  onPageChange: (page: string) => void
   adminData: any
   onLogout: () => void
 }
 
-export function Sidebar({ currentPage, onPageChange, adminData, onLogout }: SidebarProps) {
+export function Sidebar({ adminData, onLogout }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
+  const pathname = usePathname()
 
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "admin", label: "Admin", icon: Shield },
-    { id: "doctor", label: "Doctors", icon: Stethoscope },
-    { id: "news", label: "News", icon: Newspaper },
-    { id: "blog", label: "Blog", icon: BookOpen },
-    { id: "services", label: "Services", icon: Briefcase },
-    { id: "insurance", label: "Insurance", icon: Shield },
-    { id: "career", label: "Careers", icon: Briefcase },
-    { id: "direction", label: "Directions", icon: Compass },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, route: "/dashboard" },
+    { id: "clinic_requests", label: "Zayafka", icon: ClipboardList, route: "/clinic-requests" },
+    { id: "admin", label: "Admin", icon: Shield, route: "/admin" },
+    { id: "doctor", label: "Doctors", icon: Stethoscope, route: "/doctors" },
+    { id: "news", label: "News", icon: Newspaper, route: "/news" },
+    { id: "blog", label: "Blog", icon: BookOpen, route: "/blog" },
+    { id: "services", label: "Services", icon: Briefcase, route: "/services" },
+    { id: "insurance", label: "Insurance", icon: Shield, route: "/insurance" },
+    { id: "career", label: "Careers", icon: Briefcase, route: "/careers" },
+    { id: "direction", label: "Directions", icon: Compass, route: "/directions" },
   ]
 
   return (
@@ -42,10 +46,9 @@ export function Sidebar({ currentPage, onPageChange, adminData, onLogout }: Side
       {/* Header */}
       <div className="p-4 border-b border-slate-700 flex items-center justify-between">
         {!collapsed && (
-          <div>
+          <Link href="/dashboard" className="flex items-center gap-2">
             <h2 className="text-xl font-bold text-emerald-400">ONA VA BOLA CLINIC</h2>
-            <p className="text-xs text-slate-400">ADMIN DASHBOARD</p>
-          </div>
+          </Link>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -75,23 +78,25 @@ export function Sidebar({ currentPage, onPageChange, adminData, onLogout }: Side
         <div className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon
-            const isActive = currentPage === item.id
+            const isActive = pathname === item.route
+            
             return (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => {
-                  console.log("[v0] Navigating to:", item.id)
-                  onPageChange(item.id)
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                  isActive
-                    ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg"
-                    : "text-slate-300 hover:bg-slate-700 hover:text-white"
-                }`}
+                href={item.route}
+                className={`block w-full`}
               >
-                <Icon size={20} />
-                {!collapsed && <span className="font-medium">{item.label}</span>}
-              </button>
+                <div
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg"
+                      : "text-slate-300 hover:bg-slate-700 hover:text-white"
+                  }`}
+                >
+                  <Icon size={20} />
+                  {!collapsed && <span className="font-medium">{item.label}</span>}
+                </div>
+              </Link>
             )
           })}
         </div>
