@@ -133,14 +133,10 @@ export function DoctorForm({ doctor, onSave, onCancel, setToast }: DoctorFormPro
         const directionDoctorData = new FormData()
         directionDoctorData.append("doctors_id", doctor.id.toString())
         directionDoctorData.append("direction_id", selectedDirectionId)
-
-        if (formData.photo instanceof File) {
-          directionDoctorData.append("photo", formData.photo)
-        }
         
-        if (formData.video instanceof File) {
-          directionDoctorData.append("video", formData.video)
-        }
+        // Send empty strings for photo and video as API expects string values
+        directionDoctorData.append("photo", "")
+        directionDoctorData.append("video", "")
 
         const directionResponse = await fetch(`${BACKEND_URL}/direction-doctors`, {
           method: "POST",
@@ -200,18 +196,14 @@ export function DoctorForm({ doctor, onSave, onCancel, setToast }: DoctorFormPro
         await new Promise(resolve => setTimeout(resolve, 500))
 
         // 3. Create direction-doctor relationship
+        // IMPORTANT: Don't send photo/video files here - they're already uploaded with the doctor
         const directionDoctorData = new FormData()
         directionDoctorData.append("doctors_id", doctorId.toString())
         directionDoctorData.append("direction_id", selectedDirectionId)
-
-        // Use the same files if available
-        if (formData.photo instanceof File) {
-          directionDoctorData.append("photo", formData.photo)
-        }
         
-        if (formData.video instanceof File) {
-          directionDoctorData.append("video", formData.video)
-        }
+        // Send empty strings for photo and video as API expects string values
+        directionDoctorData.append("photo", "")
+        directionDoctorData.append("video", "")
 
         const directionResponse = await fetch(`${BACKEND_URL}/direction-doctors`, {
           method: "POST",
@@ -228,7 +220,8 @@ export function DoctorForm({ doctor, onSave, onCancel, setToast }: DoctorFormPro
             console.error("Failed to delete doctor after direction linking failed:", deleteError)
           }
           
-          throw new Error("Failed to link doctor with direction")
+          const errorData = await directionResponse.json()
+          throw new Error(errorData.message || "Failed to link doctor with direction")
         }
 
         setToast({ 
