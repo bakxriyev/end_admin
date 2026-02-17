@@ -197,7 +197,6 @@ export function AdminManagement() {
         isOpen={showForm}
         onClose={() => setShowForm(false)}
         title={editingAdmin ? "Adminni Tahrirlash" : "Yangi Admin Qo'shish"}
-        className="max-w-2xl"
       >
         <AdminForm
           admin={editingAdmin}

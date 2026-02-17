@@ -78,18 +78,18 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-slate-800 to-blue-700 relative overflow-hidden">
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left side - Healthcare image and branding */}
-            <div className="hidden lg:flex flex-col justify-center items-center ">
+            <div className="hidden lg:flex flex-col justify-center  items-center ">
               <img src="/logo.jpg" alt="Healthcare professional" className="w-full h-full object-cover rounded-3xl" />
 
               <div className="mt-8 text-center">
                 <div className="flex items-center justify-center gap-2 mb-4">
                 
-                  <span className="text-2xl font-bold text-white mb-24">"SOG`LOM ONA BOLA" CLINIC</span>
+                  <span className="text-2xl font-bold text-white mb-24">ENDOKRINOLOGIYA KLINIKASI ADMIN PANEL</span>
                 </div>
                
               </div>
